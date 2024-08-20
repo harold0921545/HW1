@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC721TokenReceiver} from "forge-std/interfaces/IERC721.sol";
+import "forge-std/console.sol";
 
 interface IERC721 {
     function balanceOf(address owner) external view returns (uint256 balance);
@@ -30,6 +31,9 @@ contract NFinTech is IERC721 {
     mapping(address => uint256) private _balances;
     mapping(address => bool) private isClaim;
 
+    mapping(uint256 => address) private _tokenApproved;
+    mapping(address => mapping(address => bool)) private _allApproved;
+    
     error ZeroAddress();
 
     constructor(string memory name_, string memory symbol_) payable {
@@ -68,8 +72,38 @@ contract NFinTech is IERC721 {
         return owner;
     }
 
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external{
+    // TODO: Implement setApproveForAll function
+    // TODO: Implement isApprovedForAll function
+    // TODO: Implement approve function
+    // TODO: Implement getApproved function
 
+    function setApprovalForAll(address operator, bool approved) external{
+        emit ApprovalForAll(msg.sender, operator, approved);
+        _allApproved[operator][msg.sender] = approved;
+        console.log("HELLO???");
+        console.logAddress(operator);
+        if (operator == address(0)) revert ZeroAddress();
+    }
+    function isApprovedForAll(address owner, address operator) external view returns (bool){
+        return _allApproved[operator][owner];
+    }
+    function approve(address to, uint256 tokenId) external{
+        address owner = ownerOf(tokenId);
+        require(owner == msg.sender, "owner != msg.sender");
+        _tokenApproved[tokenId] = to;
+        
+        emit Approval(owner, to, tokenId);
+    }
+    function getApproved(uint256 tokenId) external view returns (address operator){
+        return _tokenApproved[tokenId];
+    }
+
+    // TODO: Implement transferFrom function
+    
+    // TODO: Implement safeTransferFrom function
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external{
+        
     }
     function safeTransferFrom(address from, address to, uint256 tokenId) external{
 
@@ -77,27 +111,6 @@ contract NFinTech is IERC721 {
     function transferFrom(address from, address to, uint256 tokenId) external{
 
     }
-    function approve(address to, uint256 tokenId) external{
-
-    }
-    function setApprovalForAll(address operator, bool approved) external{
-
-    }
-    function getApproved(uint256 tokenId) external view returns (address operator){
-
-    }
-    function isApprovedForAll(address owner, address operator) external view returns (bool){
-        
-    }
-    // TODO: Implement setApproveForAll function
-
-    // TODO: Implement isApprovedForAll function
     
-    // TODO: Implement approve function
-    
-    // TODO: Implement getApproved function
 
-    // TODO: Implement transferFrom function
-    
-    // TODO: Implement safeTransferFrom function
 }
