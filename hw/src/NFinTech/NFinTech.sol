@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {IERC721TokenReceiver} from "forge-std/interfaces/IERC721.sol";
+
 interface IERC721 {
     function balanceOf(address owner) external view returns (uint256 balance);
     function ownerOf(uint256 tokenId) external view returns (address owner);
@@ -66,6 +68,27 @@ contract NFinTech is IERC721 {
         return owner;
     }
 
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external{
+
+    }
+    function safeTransferFrom(address from, address to, uint256 tokenId) external{
+
+    }
+    function transferFrom(address from, address to, uint256 tokenId) external{
+
+    }
+    function approve(address to, uint256 tokenId) external{
+
+    }
+    function setApprovalForAll(address operator, bool approved) external{
+
+    }
+    function getApproved(uint256 tokenId) external view returns (address operator){
+
+    }
+    function isApprovedForAll(address owner, address operator) external view returns (bool){
+        
+    }
     // TODO: Implement setApproveForAll function
 
     // TODO: Implement isApprovedForAll function
