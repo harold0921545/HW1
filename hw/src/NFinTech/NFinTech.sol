@@ -100,18 +100,46 @@ contract NFinTech is IERC721 {
     }
 
     // TODO: Implement transferFrom function
-    
     // TODO: Implement safeTransferFrom function
 
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external{
+        address owner = ownerOf(tokenId);
+        require(from != address(0) && to != address(0), "safeTransferFrom failed");
+        require((owner == msg.sender || _tokenApproved[tokenId] == msg.sender || _allApproved[owner][msg.sender] == true), "safeTransferFrom failed");
         
+        if (to.code.length > 0){
+            bytes4 ret = IERC721TokenReceiver(to).onERC721Received(msg.sender, from, tokenId, data);
+            require(ret == IERC721TokenReceiver.onERC721Received.selector, "onERC721Received failed");
+        }
+
+        _balances[to] += 1;
+        _balances[from] -= 1;
+        _owner[tokenId] = to;
+        emit Transfer(from, to, tokenId);
     }
     function safeTransferFrom(address from, address to, uint256 tokenId) external{
+        address owner = ownerOf(tokenId);
+        require(from != address(0) && to != address(0), "safeTransferFrom failed");
+        require((owner == msg.sender || _tokenApproved[tokenId] == msg.sender || _allApproved[owner][msg.sender] == true), "safeTransferFrom failed");
+        
+        if (to.code.length > 0){
+            bytes4 ret = IERC721TokenReceiver(to).onERC721Received(msg.sender, from, tokenId, "");
+            require(ret == IERC721TokenReceiver.onERC721Received.selector, "onERC721Received failed");
+        }
 
+        _balances[to] += 1;
+        _balances[from] -= 1;
+        _owner[tokenId] = to;
+        emit Transfer(from, to, tokenId);
     }
     function transferFrom(address from, address to, uint256 tokenId) external{
+        address owner = ownerOf(tokenId);
+        require(from != address(0) && to != address(0), "safeTransferFrom failed");
+        require((owner == msg.sender || _tokenApproved[tokenId] == msg.sender || _allApproved[owner][msg.sender] == true), "safeTransferFrom failed");
 
+        _balances[to] += 1;
+        _balances[from] -= 1;
+        _owner[tokenId] = to;
+        emit Transfer(from, to, tokenId);
     }
-    
-
 }
